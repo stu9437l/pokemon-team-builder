@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Header from "../component/header";
 import Breadcrumb from "../component/breadcrumb";
 import Pokemon from "../component/pokemon-card";
-import { Link, useFetcher } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Axios } from "../axios";
 import Loading from "../component/loading";
 
@@ -15,12 +14,20 @@ const MyTeam = () => {
     const GetTeamData = async () => {
       try {
         // eslint-disable-next-line array-callback-return
-        const allData = teams.map(async (id) => {
+        const results = teams.map(async (id) => {
           const response = await Axios.get(`/pokemon/${id}`);
           return response.data;
         });
-        const responses = await Promise.all(allData);
-        setData(responses);
+        const responses = await Promise.all(results);
+        const colorPromises = responses.map(async (pokemon) => {
+          const colorResponse = await Axios.get(
+            `/pokemon-species/${pokemon.id}`
+          );
+          return { ...pokemon, color: colorResponse.data.color.name };
+        });
+
+        const combinedData = await Promise.all(colorPromises);
+        setData(combinedData);
         setIsLoading(false);
       } catch (err) {
         console.log(err);
@@ -35,7 +42,6 @@ const MyTeam = () => {
     setData(updatedTeam);
     localStorage.setItem("my-team", JSON.stringify(updatedTeam));
   };
-
   return (
     <div className="container">
       <Breadcrumb name={"My Team"} />
@@ -49,9 +55,9 @@ const MyTeam = () => {
                 return (
                   <Pokemon
                     name={pokemon.name}
-                    image={pokemon.image}
+                    image={pokemon.sprites.front_default}
                     id={pokemon.id}
-                    types={pokemon.types}
+                    types={pokemon.types.map((type) => [type.type.name])}
                     index={index}
                     color={pokemon.color}
                     idAddButton={false}

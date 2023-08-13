@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { Threedigit } from "../utils";
 
@@ -14,6 +14,7 @@ const Pokemon = ({
   idAddButton,
   isRemoveButton,
 }) => {
+  console.log(types);
   return (
     <div className="col-6 col-lg-4 col-xl-3" key={index}>
       <div className="pokemon-card" style={{ backgroundColor: `${color}` }}>
@@ -48,6 +49,7 @@ const Pokemon = ({
           <Link to={`/pokemon/${id}`}>
             <h3 className="pokemon__name">{name}</h3>
           </Link>
+
           <div className="pokemon__type">Type: {types.join(" , ")}</div>
         </div>
       </div>

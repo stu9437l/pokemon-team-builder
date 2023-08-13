@@ -1,8 +1,14 @@
 import "./App.css";
-import Homepage from "./pages";
 import Routing from "./route";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
-  return <Routing />;
+  return (
+    <>
+      <Routing />
+      <ToastContainer />
+    </>
+  );
 }
 
 export default App;

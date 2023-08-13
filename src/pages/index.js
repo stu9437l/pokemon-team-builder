@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { Axios } from "../axios";
 import axios from "axios";
-import { Threedigit } from "../utils";
 import Loading from "../component/loading";
-import { Link } from "react-router-dom";
 import Pokemon from "../component/pokemon-card";
 import Header from "../component/header";
+import { ErrorAlert, SuccessALert, WarningSuccess } from "../utils/alert";
 const Homepage = () => {
   const generations = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
   const [pokemonData, setPokemonData] = useState([]);
@@ -13,12 +12,17 @@ const Homepage = () => {
   const [generation, setGeneration] = useState(1);
 
   const [team, setTeam] = useState([]);
-
   const StoreID = (id) => {
-    if (!team.includes(id)) {
-      setTeam((prev) => [...prev, id]);
+    if (team.length < 6) {
+      if (!team.includes(id)) {
+        setTeam((prev) => [...prev, id]);
+        SuccessALert("Added to your team");
+      } else {
+        setTeam((prev) => [...prev]);
+        WarningSuccess("Already added to your team");
+      }
     } else {
-      setTeam((prev) => [...prev]);
+      ErrorAlert("Reach to maximum 6 pokemon");
     }
   };
 
